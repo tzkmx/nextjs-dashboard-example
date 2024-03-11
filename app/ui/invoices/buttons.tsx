@@ -1,11 +1,12 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { DASHBOARD_INVOICES_URL, deleteInvoice } from '@/app/lib/actions'
+import { deleteInvoice } from '@/app/lib/actions'
+import { CREATE_INVOICE_URL, UPDATE_INVOICE_URL } from '@/app/lib/navigation'
 
 export function CreateInvoice() {
   return (
     <Link
-      href={`${DASHBOARD_INVOICES_URL}/create`}
+      href={CREATE_INVOICE_URL}
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
       <span className="hidden md:block">Create Invoice</span>{' '}
@@ -17,7 +18,7 @@ export function CreateInvoice() {
 export function UpdateInvoice({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/invoices/${id}/edit`}
+      href={`${UPDATE_INVOICE_URL(id)}`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />

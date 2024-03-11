@@ -9,7 +9,8 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Button } from '@/app/ui/button'
-import { DASHBOARD_INVOICES_URL, updateInvoice } from '@/app/lib/actions'
+import { updateInvoice } from '@/app/lib/actions'
+import { DASHBOARD_INVOICES_URL } from '@/app/lib/navigation'
 
 export default function EditInvoiceForm({
   invoice,

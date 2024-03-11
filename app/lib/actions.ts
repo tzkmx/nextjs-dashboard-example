@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { DASHBOARD_INVOICES_URL } from '@/app/lib/navigation'
 
 const FormSchema = z.object({
   id: z.string(),
@@ -14,8 +15,6 @@ const FormSchema = z.object({
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true })
 const UpdateInvoice = FormSchema.omit({ id: true, date: true })
-
-export const DASHBOARD_INVOICES_URL = '/dashboard/invoices'
 
 export async function createInvoice(formData: FormData) {
   const { customerId, amount, status } = CreateInvoice.parse({
