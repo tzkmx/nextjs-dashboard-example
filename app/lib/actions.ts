@@ -13,7 +13,9 @@ const FormSchema = z.object({
 })
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true })
-const redirectSuccess = '/dashboard/invoices'
+const UpdateInvoice = FormSchema.omit({ id: true, date: true })
+
+export const DASHBOARD_INVOICES_URL = '/dashboard/invoices'
 
 export async function createInvoice(formData: FormData) {
   const { customerId, amount, status } = CreateInvoice.parse({
@@ -28,6 +30,40 @@ export async function createInvoice(formData: FormData) {
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `
 
-  revalidatePath(redirectSuccess)
-  redirect(redirectSuccess)
+  redirectToDashboardInvoices()
+}
+
+export async function updateInvoice(id: string, formData: FormData) {
+  const { customerId, amount, status } = UpdateInvoice.parse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  })
+  const amountInCents = amount * 100
+  await sql`
+    UPDATE invoices
+    SET customer_id = ${customerId},
+        amount      = ${amountInCents},
+        status      = ${status}
+    WHERE id = ${id}
+  `
+  redirectToDashboardInvoices()
+}
+
+export async function deleteInvoice(id: string) {
+  await sql`
+    DELETE
+    FROM invoices
+    WHERE id = ${id}
+  `
+  revalidateDashboardInvoices()
+}
+
+function redirectToDashboardInvoices() {
+  revalidatePath(DASHBOARD_INVOICES_URL)
+  redirect(DASHBOARD_INVOICES_URL)
+}
+
+function revalidateDashboardInvoices() {
+  revalidatePath(DASHBOARD_INVOICES_URL)
 }
