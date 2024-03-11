@@ -61,12 +61,23 @@ export async function createInvoice(
   }
 }
 
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({
+export async function updateInvoice(
+  id: string,
+  prevState: State,
+  formData: FormData,
+): Promise<State> {
+  const validFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   })
+  if (!validFields.success) {
+    return {
+      errors: validFields.error.flatten().fieldErrors,
+      message: 'Error updating invoice',
+    }
+  }
+  const { customerId, amount, status } = validFields.data
   const amountInCents = amount * 100
   try {
     await sql`
@@ -81,6 +92,7 @@ export async function updateInvoice(id: string, formData: FormData) {
     return { message: 'Error updating invoice' }
   }
   redirectToDashboardInvoices()
+  return { message: 'Updated invoice' }
 }
 
 export async function deleteInvoice(id: string) {
